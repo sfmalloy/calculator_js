@@ -45,6 +45,10 @@ class Lexeme {
 class Lexer {
   constructor() { }
 
+  isNumber(str) {
+    return !isNaN(parseFloat(str)) && isFinite(str);
+  }
+
   analyze(expression) {
     let lexemes = Array();
     for (let i = 0; i < expression.length; ++i) {
@@ -66,16 +70,17 @@ class Lexer {
         lexemes.push(new Lexeme(Symbols.RPAREN));
       } else if (i < expression.length && expression[i] == 'p' && expression[i+1] == 'i') {
         lexemes.push(new Lexeme(Symbols.PI));
+        ++i;
       } else if (expression[i] == 'e') {
         lexemes.push(new Lexeme(Symbols.E));
-      } else if (expression[i] != ' ') {
+      } else if (this.isNumber(expression[i])) {
         let dotCount = 0;
         let begin = i;
         let end = i;
         while (end < expression.length && dotCount < 2 && expression[end] != ' ') {
           if (expression[end] == '.') {
             dotCount += 1;
-          } else if (!(!isNaN(parseFloat(expression[end])) && isFinite(expression[end]))) {
+          } else if (!this.isNumber(expression[end])) {
             break;
           }
           
@@ -92,8 +97,8 @@ class Lexer {
       }
     }
     
-    lexemes.forEach(console.log);
-    console.log(lexemes.length);
+    // lexemes.forEach(console.log);
+    // console.log(lexemes.length);
 
     return lexemes;
   }

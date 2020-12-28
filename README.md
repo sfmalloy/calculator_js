@@ -1,2 +1,2 @@
-# calculator_js
+# CalculatorJS
 Calculator written in Javascript.

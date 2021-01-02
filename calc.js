@@ -1,3 +1,10 @@
+class EvalError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "EvalError";
+  }
+}
+
 function calculate(left, op, right) {
   if (op == Symbols.PLUS)
     return left + right;
@@ -12,21 +19,30 @@ function calculate(left, op, right) {
 }
 
 function evaluate(node) {
-  if (node instanceof ExpressionNode) {
-    let lhs = evaluate(node.left);
-    let rhs = evaluate(node.right);
-    return calculate(lhs, node.op, rhs);
-  } else {
-    return node.value;
+  try {
+    if (node instanceof ExpressionNode) {
+      let lhs = evaluate(node.left);
+      let rhs = evaluate(node.right);
+      return calculate(lhs, node.op, rhs);
+    } else {
+      return node.value;
+    }
+  } catch (error) {
+    throw new EvalError("Error while evaluating, cannot get value of unknown symbol");
   }
+
 }
 
-document.addEventListener('keyup', (key) => {
-  if (key.code == 'Enter') {
-    let lexer = new Lexer(document.getElementById('expression').value);
-    let parser = new Parser(lexer);
-    let tree = parser.parse();
-
-    document.getElementById('output').innerHTML = evaluate(tree);
+document.addEventListener("keydown", ({key}) => {
+  let output = document.getElementById("output");
+  if (key === "Enter") {
+    try {
+      let lexer = new Lexer(document.getElementById("expression").value);
+      let parser = new Parser(lexer);
+      let tree = parser.parse();
+      output.innerHTML = evaluate(tree);
+    } catch (error) {
+      output.innerHTML = error.name + ': ' + error.message;
+    }
   }
 });

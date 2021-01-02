@@ -1,10 +1,10 @@
-body {
+body, input {
   font-size: 16pt;
   font-family: monospace;
 }
 
-input {
-  resize: none;
+button {
   font-size: 16pt;
-  font-family: monospace;
+  padding: 10px 30px;
+  margin: 5px;
 }

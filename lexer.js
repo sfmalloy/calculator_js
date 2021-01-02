@@ -1,17 +1,3 @@
-// For debugging purposes only, switch to numerical enum for release
-// const Symbols = Object.freeze({
-//   PLUS: "PLUS",
-//   MINUS: "MINUS",
-//   TIMES: "TIMES",
-//   DIVIDES: "DIVIDES",
-//   POWER: "POWER",
-//   LPAREN: "LPAREN",
-//   RPAREN: "RPAREN",
-//   NUMBER: "NUMBER",
-//   PI: "PI",
-//   E: "E"
-// });
-
 const Symbols = Object.freeze({
   PLUS: 0,
   MINUS: 1,
@@ -88,33 +74,31 @@ class Lexer {
 
   analyze() {
     for (let i = 0; i < this.expression.length; ++i) {
-      if (this.expression[i] == '+') {
+      if (this.expression[i] === '+') {
         this.lexemes.push(new Lexeme(Symbols.PLUS));
-      } else if (this.expression[i] == '-') {
+      } else if (this.expression[i] === '-') {
         this.lexemes.push(new Lexeme(Symbols.MINUS));
-      } else if (this.expression[i] == '*') {
+      } else if (this.expression[i] === '*') {
         this.lexemes.push(new Lexeme(Symbols.TIMES));
-      } else if (this.expression[i] == '*') {
-        this.lexemes.push(new Lexeme(Symbols.TIMES));
-      } else if (this.expression[i] == '/') {
+      } else if (this.expression[i] === '/') {
         this.lexemes.push(new Lexeme(Symbols.DIVIDES));
-      } else if (this.expression[i] == '^') {
+      } else if (this.expression[i] === '^') {
         this.lexemes.push(new Lexeme(Symbols.POWER));
-      } else if (this.expression[i] == '(') {
+      } else if (this.expression[i] === '(') {
         this.lexemes.push(new Lexeme(Symbols.LPAREN));
-      } else if (this.expression[i] == ')') {
+      } else if (this.expression[i] === ')') {
         this.lexemes.push(new Lexeme(Symbols.RPAREN));
-      } else if (i < this.expression.length && this.expression[i] == 'p' && this.expression[i+1] == 'i') {
+      } else if (i < this.expression.length && this.expression[i] === 'p' && this.expression[i+1] === 'i') {
         this.lexemes.push(new Lexeme(Symbols.PI));
         ++i;
-      } else if (this.expression[i] == 'e') {
+      } else if (this.expression[i] === 'e') {
         this.lexemes.push(new Lexeme(Symbols.E));
       } else if (this.isNumber(this.expression[i])) {
         let dotCount = 0;
         let begin = i;
         let end = i;
-        while (end < this.expression.length && dotCount < 2 && this.expression[end] != ' ') {
-          if (this.expression[end] == '.') {
+        while (end < this.expression.length && dotCount < 2 && this.expression[end] !== ' ') {
+          if (this.expression[end] === '.') {
             dotCount += 1;
           } else if (!this.isNumber(this.expression[end])) {
             break;
@@ -125,17 +109,25 @@ class Lexer {
         
         if (dotCount < 2) {
           this.lexemes.push(new Lexeme(Symbols.NUMBER, this.expression.slice(begin, end)));
+        } else {
+          throw new LexerError("Too many decimal points");
         }
 
         i = end;
-        if (this.expression[end] != ' ')
+        if (this.expression[end] !== ' ')
           i -= 1;
+      } else if (this.expression[i] !== ' ') {
+        throw new LexerError(`Unknown symbol found (${this.expression[i]})`);
       }
     }
     
-    // this.lexemes.forEach(console.log);
-    // console.log(this.lexemes.length);
-
     return this.lexemes;
+  }
+}
+
+class LexerError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "LexerError";
   }
 }

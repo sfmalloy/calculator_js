@@ -50,9 +50,16 @@ document.addEventListener("keydown", ({key}) => {
 window.onload = () => {
   Array.from(document.getElementsByClassName("number_row")).forEach((row) => {
     Array.from(row.getElementsByTagName("button")).forEach((button) => {
-      button.addEventListener("click", () => { 
-        document.getElementById("expression").value += button.innerText;
+      button.addEventListener("click", () => {
+        if (button.innerText !== "=" && button.innerText !== "C")
+          document.getElementById("expression").value += button.innerText;
+        else if (button.innerText === "=")
+          document.dispatchEvent(new KeyboardEvent("keydown", {"key": "Enter"}));
+        else
+          document.getElementById("expression").value = "";
       });
+
+      button.addEventListener("mouseup", () => { button.blur(); });
     });
   });
 };

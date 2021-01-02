@@ -3,8 +3,22 @@ body, input {
   font-family: monospace;
 }
 
+input {
+  text-align: right;
+  width: 260pt;
+}
+
+#inout {
+  float: left;
+}
+
 button {
   font-size: 16pt;
-  padding: 10px 30px;
+  font-family: monospace;
+  padding: 15px 30px;
   margin: 5px;
+}
+
+#number_block {
+  clear: both;
 }

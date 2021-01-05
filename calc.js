@@ -55,8 +55,10 @@ window.onload = () => {
           document.getElementById("expression").value += button.innerText;
         else if (button.innerText === "=")
           document.dispatchEvent(new KeyboardEvent("keydown", {"key": "Enter"}));
-        else
+        else {
           document.getElementById("expression").value = "";
+          document.getElementById("output").innerHTML = "";
+        }
       });
 
       button.addEventListener("mouseup", () => { button.blur(); });
